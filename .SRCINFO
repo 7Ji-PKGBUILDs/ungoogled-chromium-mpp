@@ -49,7 +49,6 @@ pkgbase = ungoogled-chromium-mpp
 	depends = minizip
 	depends = opus
 	depends = harfbuzz
-	depends = re2
 	depends = jsoncpp
 	depends = libxslt
 	depends = libpng
