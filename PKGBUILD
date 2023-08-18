@@ -1,3 +1,7 @@
+# Maintainer: 7Ji <pugokushin@gmail.com>
+
+# Based on aur/ungoogled-chromium, with Rockchip mpp patches
+
 # Maintainer: Seppia <seppia@seppio.fish>
 # Maintainer: JustKidding <jk@vin.ovh>
  
@@ -8,13 +12,15 @@
 # Contributor: Jan "heftig" Steffens <jan.steffens@gmail.com>
 # Contributor: Daniel J Griffiths <ghost1227@archlinux.us>
 
-pkgname=ungoogled-chromium
-pkgver=114.0.5735.198
+_pkgver_short=114.0.5735
+_pkgname=ungoogled-chromium
+pkgname=${_pkgname}-mpp
+pkgver=${_pkgver_short}.198
 pkgrel=1
 _launcher_ver=8
 _manual_clone=0
-pkgdesc="A lightweight approach to removing Google web service dependency"
-arch=('x86_64')
+pkgdesc="A lightweight approach to removing Google web service dependency, with Rockchip MPP support"
+arch=('aarch64')
 url="https://github.com/ungoogled-software/ungoogled-chromium"
 license=('BSD')
 depends=('gtk3' 'nss' 'alsa-lib' 'xdg-utils' 'libxss' 'libcups' 'libgcrypt'
@@ -57,7 +63,7 @@ conflicts=('chromium' 'chromedriver')
 _uc_usr=ungoogled-software
 _uc_ver=$pkgver-1
 source=(${source[@]}
-        $pkgname-$_uc_ver.tar.gz::https://github.com/$_uc_usr/ungoogled-chromium/archive/$_uc_ver.tar.gz
+        $_pkgname-$_uc_ver.tar.gz::https://github.com/$_uc_usr/ungoogled-chromium/archive/$_uc_ver.tar.gz
         ozone-add-va-api-support-to-wayland.patch
         vaapi-add-av1-support.patch
         remove-main-main10-profile-limit.patch)
@@ -66,7 +72,64 @@ sha256sums=(${sha256sums[@]}
             'e9e8d3a82da818f0a67d4a09be4ecff5680b0534d7f0198befb3654e9fab5b69'
             'e742cc5227b6ad6c3e0c2026edd561c6d3151e7bf0afb618578ede181451b307'
             'be8d3475427553feb5bd46665ead3086301ed93c9a41cf6cc2644811c5bda51c')
- 
+depends+=('libv4l-rkmpp')
+install=${pkgname}.install
+source+=(
+  'chromium-mpp-setup.service'
+  'chromium-mpp-setup.sh'
+)
+_mpp_patches=(
+  '0001-media-gpu-v4l2-Support-V4L2-VDA-with-libv4l2-on-Linu.patch'
+  '0002-HACK-media-gpu-v4l2-Allow-V4L2-VEA-on-non-chromeos-p.patch'
+  '0003-Add-mmap-via-libv4l-to-generic_v4l2_device.patch'
+  '0004-media-capture-linux-Support-libv4l2-plugins.patch'
+  '0005-cld3-Avoid-unaligned-accesses.patch'
+  '0006-media-gpu-v4l2-Use-POLLIN-for-pending-event.patch'
+  '0007-media-capture-linux-Prefer-using-the-first-device.patch'
+  '0008-media-gpu-v4l2-Fix-compile-error-when-ozone-not-enab.patch'
+  '0009-ui-events-ozone-Define-SW_PEN_INSERTED-for-old-kerne.patch'
+  '0010-Create-new-fence-when-there-s-no-in-fences.patch'
+  '0011-HACK-ozone-wayland-Force-disable-implicit-external-s.patch'
+  '0012-HACK-media-capture-linux-Allow-camera-without-suppor.patch'
+  '0013-content-gpu-Only-depend-dri-for-X11.patch'
+  '0014-HACK-media-Disable-chromeos-direct-video-decoder-by-.patch'
+  '0015-media-Support-HEVC-in-V4L2-VDA.patch'
+  '0016-media-gpu-chromeos-Define-new-formats-for-old-kernel.patch'
+  '0017-media-Support-AV1-in-V4L2-VDA.patch'
+  '0018-media-gpu-sandbox-Only-depend-dri-for-X11.patch'
+  '0019-HACK-ui-gl-Force-enabling-validating-command-decoder.patch'
+  '0020-ui-gfx-linux-Force-disabling-modifiers.patch'
+)
+_mpp_commit='7f01be8b695ed27220c4fb3d92f96f65aeafc755'
+_mpp_parent="https://github.com/JeffyCN/meta-rockchip/raw/${_mpp_commit}/dynamic-layers/recipes-browser/chromium/chromium_${_pkgver_short}/"
+for _mpp_patch in ${_mpp_patches[@]}; do
+  source+=("${_mpp_parent}${_mpp_patch}")
+done
+sha256sums+=(
+  'a586439809d50cbdf89368978d4d41fd0d77c4898a68e94ea6ba8bc399d939b2'
+  '40bcb242e5f571b09a330150765be80a19603e07e23369f017d0a5751bb2d79f'
+  'ddfa54cd7f67c6f8ce6a60d665d4fca6fc642b09b6433a0820f126f53d2e546a'
+  'e6089f4fb42cf3d0dd3d616a930b15cb798d6cbc3e3c742b5cffe822fcd579e1'
+  'c3f6ef31304473c90b9e9ea028d4c6a6e15d37888b34df90efa07f0f29bdec88'
+  'e6d31c2445f81f0a30607d1fa51a08c928c8e701e9dcc397b172cdaf5a3fe2c3'
+  '77b1d5a8b75e2131d8e5dd03d6a3b6a9c01f96328373b030a8aec5c177c25fab'
+  '130ed4457e5e1147d7599efe9b2fee3a8d7f84d6fdf7126d3ee8a1cf88fa8a0a'
+  'c4797fa2c6b7f0429bf5bd11a2e3992e9048ac1d2e81b16e5705d81087fb666c'
+  '6b8527c77a2656a1681e6c64562df9fddecc133ab45e292d6d79b39a15f255a4'
+  '46a86a521b78dc900be6d7f3e32cb2782197e54fce1cebd8ac3c7cd90223f6cc'
+  '8f200d9a1d327532a98383bfd34fbe8944c5c8d5e11be4985928ed2eba28bd91'
+  '027d274721829746753ede2eebbf140d78e0a7df6349b901ef464df424960c07'
+  '0840c0fd9a4d81a4d77af9761c317d0b0500c5b23869cc919f69886c6dfefee9'
+  '3ec89cb09f248b9a8e358959d6d4a91bcaef072964bfda98c71cfd0b839f1ccb'
+  '81d4ff6b78c4f6962ce75fe514d326650aed4bc7153ee31a28616ff24b16fb73'
+  '4483fb6bb41fc40f0b2b34b1ded22fed3258b2e0b14dd97fa34ded36fb8efec5'
+  '485bcb4cf4bc17660203853c682ed8b668d2f222a3e0eb36c0996e8c2cd53e6c'
+  'c17147edd83dafb811bb8bc92b33921065225eadc665bb706812ef6e5f08af18'
+  '5c8977d5d5eaba5d5a557fa4f8fefbb8f2a788a25569659d4d205a328b093f6e'
+  'a2f827dfb6a0bb4cc222fe1e7f09de1db4537f0da1b1a8da0e84bb65a9a5d599'
+  '9afa1330d0dad5adffe5181bbb7f5eedb0a44c4c2981b9d1a68748bf192a6ea8'
+)
+
 # Possible replacements are listed in build/linux/unbundle/replace_gn_files.py
 # Keys are the names in the above script; values are the dependencies in Arch
 declare -gA _system_libs=(
@@ -152,8 +215,13 @@ prepare() {
   sed -i '/^bool IsHevcProfileSupported(const VideoType& type) {$/{s++bool IsHevcProfileSupported(const VideoType\& type) { return true;+;h};${x;/./{x;q0};x;q1}' \
 			media/base/supported_types.cc
 
+  # MPP Patches
+  for _mpp_patch in ${_mpp_patches[@]}; do
+    patch -Np1 -i ../${_mpp_patch}
+  done
+
   # Ungoogled Chromium changes
-  _ungoogled_repo="$srcdir/$pkgname-$_uc_ver"
+  _ungoogled_repo="$srcdir/$_pkgname-$_uc_ver"
   _utils="${_ungoogled_repo}/utils"
   msg2 'Pruning binaries'
   python "$_utils/prune_binaries.py" ./ "$_ungoogled_repo/pruning.list"
@@ -231,7 +299,7 @@ build() {
   )
 
   # Append ungoogled chromium flags to _flags array
-  _ungoogled_repo="$srcdir/$pkgname-$_uc_ver"
+  _ungoogled_repo="$srcdir/$_pkgname-$_uc_ver"
   readarray -t -O ${#_flags[@]} _flags < "${_ungoogled_repo}/flags.gn"
 
   # Facilitate deterministic builds (taken from build/config/compiler/BUILD.gn)
@@ -333,6 +401,17 @@ package() {
   done
 
   install -Dm644 LICENSE "$pkgdir/usr/share/licenses/chromium/LICENSE"
+
+  # MPP specific
+  cd ..
+  install -Dm755 chromium-mpp-setup.sh -t "${pkgdir}"/usr/bin
+  install -Dm644 chromium-mpp-setup.service -t "${pkgdir}"/usr/lib/systemd/system
+  local _profiles="${pkgdir}"/usr/share/chromium-mpp-profiles
+  echo 'enc' > ${_profiles}/default.enc
+  local _template='type=%s\ncodecs=%s\nmax-width=%u\nmax-height=%u\n'
+  printf "${_template}" dec VP8:VP9:H.264:H.265:AV1 1920 1080 > "${_profiles}"/default.dec
+  printf "${_template}" dec VP8:VP9:H.264:H.265:AV1 7680 4320 > "${_profiles}"/rk3588.dec
+  printf '# The corresponding profile must exist under /usr/share/chromium-mpp-profiles\nPROFILE=rk3588\n' > ${pkgdir}/etc/conf.d/chromium-mpp
 }
 
 # vim:set ts=2 sw=2 et:
