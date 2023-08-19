@@ -19,7 +19,7 @@ else
   DEC="${DEC_DEFAULT}"
   ENC="${ENC_DEFAULT}"
 fi
-if [[ ! -f "${DEC} "]]; then
+if [[ ! -f "${DEC}" ]]; then
   echo "Error: decoding profile '${DEC}' does not exist"
   exit 1
 fi
@@ -27,11 +27,11 @@ if [[ ! -f "${ENC}" ]]; then
   echo "Error: encoding profile '${ENC}' does not exist"
   exit 1
 fi
-if ! install --ownder=root --group=video --mode=0660 "${DEC}" /dev/video-dec0; then
+if ! install --owner=root --group=video --mode=0660 "${DEC}" /dev/video-dec0; then
   echo "Error: failed to install decoding dummy device"
   exit 1
 fi
-if ! install --ownder=root --group=video --mode=0660 "${ENC}" /dev/video-enc0; then
+if ! install --owner=root --group=video --mode=0660 "${ENC}" /dev/video-enc0; then
   echo "Error: failed to install encoding dummy device"
   exit 1
 fi
