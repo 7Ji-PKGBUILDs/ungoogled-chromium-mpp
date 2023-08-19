@@ -394,21 +394,6 @@ package() {
   done
 
   install -Dm644 LICENSE "$pkgdir/usr/share/licenses/chromium/LICENSE"
-
-  # MPP specific
-  cd ..
-  install -Dm755 chromium-mpp-setup.sh -t "${pkgdir}"/usr/bin
-  install -Dm644 chromium-mpp-setup.service -t "${pkgdir}"/usr/lib/systemd/system
-  local _profiles="${pkgdir}"/usr/share/chromium-mpp-profiles
-  echo 'enc' |
-    install -Dm644 /dev/stdin "${_profiles}"/default.enc
-  local _template='type=%s\ncodecs=%s\nmax-width=%u\nmax-height=%u\n'
-  printf "${_template}" dec VP8:VP9:H.264:H.265:AV1 1920 1080 |
-    install -Dm644 /dev/stdin "${_profiles}"/default.dec
-  printf "${_template}" dec VP8:VP9:H.264:H.265:AV1 7680 4320 |
-    install -Dm644 /dev/stdin "${_profiles}"/rk3588.dec
-  printf '# The corresponding profile must exist under /usr/share/chromium-mpp-profiles\nPROFILE=rk3588\n' |
-    install -Dm644 /dev/stdin ${pkgdir}/etc/conf.d/chromium-mpp
 }
 
 # vim:set ts=2 sw=2 et:
