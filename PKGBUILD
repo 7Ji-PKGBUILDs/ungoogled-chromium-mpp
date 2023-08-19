@@ -73,11 +73,6 @@ sha256sums=(${sha256sums[@]}
             'e742cc5227b6ad6c3e0c2026edd561c6d3151e7bf0afb618578ede181451b307'
             'be8d3475427553feb5bd46665ead3086301ed93c9a41cf6cc2644811c5bda51c')
 depends+=('libv4l-rkmpp')
-install=${pkgname}.install
-source+=(
-  'chromium-mpp-setup.service'
-  'chromium-mpp-setup.sh'
-)
 _mpp_patches=(
   '0001-media-gpu-v4l2-Support-V4L2-VDA-with-libv4l2-on-Linu.patch'
   '0002-HACK-media-gpu-v4l2-Allow-V4L2-VEA-on-non-chromeos-p.patch'
@@ -106,8 +101,6 @@ for _mpp_patch in ${_mpp_patches[@]}; do
   source+=("${_mpp_parent}${_mpp_patch}")
 done
 sha256sums+=(
-  'a586439809d50cbdf89368978d4d41fd0d77c4898a68e94ea6ba8bc399d939b2'
-  '479559ce86f580cdb39d204fd28b94b7698f23210a1337e596fe9bf8866b090e'
   'ddfa54cd7f67c6f8ce6a60d665d4fca6fc642b09b6433a0820f126f53d2e546a'
   'e6089f4fb42cf3d0dd3d616a930b15cb798d6cbc3e3c742b5cffe822fcd579e1'
   'c3f6ef31304473c90b9e9ea028d4c6a6e15d37888b34df90efa07f0f29bdec88'
