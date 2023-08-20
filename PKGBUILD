@@ -295,6 +295,13 @@ build() {
   _ungoogled_repo="$srcdir/$_pkgname-$_uc_ver"
   readarray -t -O ${#_flags[@]} _flags < "${_ungoogled_repo}/flags.gn"
 
+  # v4l flags for mpp
+  _flags+=(
+    'use_v4l2_codec=true'
+    'use_v4lplugin=true'
+    'use_linux_v4l2_only=true'
+  )
+
   # Facilitate deterministic builds (taken from build/config/compiler/BUILD.gn)
   CFLAGS+='   -Wno-builtin-macro-redefined'
   CXXFLAGS+=' -Wno-builtin-macro-redefined'
